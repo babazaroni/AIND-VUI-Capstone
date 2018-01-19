@@ -5,3 +5,8 @@ __pycache__/
 *.tar.gz
 *.pyc
 *.json
+*.wav
+
+*.flac
+
+*.txt
