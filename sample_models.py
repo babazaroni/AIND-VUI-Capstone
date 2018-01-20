@@ -155,9 +155,9 @@ def final_model():
     """
     # Main acoustic input
 
-    recur_layers = 3
-    rnn_units = 3
-    input_dim = 3
+    recur_layers = 2
+    rnn_units = 200
+    input_dim = 13
     output_dim = 29
 
     input_data = Input(name='the_input', shape=(None, input_dim))
