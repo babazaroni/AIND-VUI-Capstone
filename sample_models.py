@@ -150,19 +150,29 @@ def bidirectional_rnn_model(input_dim, units, output_dim=29):
     print(model.summary())
     return model
 
-def final_model():
-    """ Build a deep network for speech 
-    """
-    # Main acoustic input
 
-    recur_layers = 2
-    rnn_units = 200
-    input_dim = 13
-    output_dim = 29
+def final_model(input_dim, filters, kernel_size, conv_stride,
+                      conv_border_mode, rnn_units,recur_layers, output_dim=29):
+
+    # Main acoustic input
 
     input_data = Input(name='the_input', shape=(None, input_dim))
     # TODO: Specify the layers in your network
-    last_layer = input_data
+
+
+    # convolution layer
+    conv_1d = Conv1D(filters, kernel_size,
+                     strides=conv_stride,
+                     padding=conv_border_mode,
+                     activation='relu',
+                     name='conv1d')(input_data)
+
+    # batch normalization layer
+    bn_cnn = BatchNormalization(name='bn_conv_1d')(conv_1d)
+
+    last_layer = bn_cnn
+
+    # add bidir GRU with batch normalization layers
 
     for layer_num in range(0, recur_layers):
         d_rnn_layer = Bidirectional(GRU(rnn_units, activation='relu',return_sequences=True, implementation=2, name='d_rnn_{}'.format(layer_num)))(last_layer)
@@ -180,7 +190,10 @@ def final_model():
 
     # TODO: Specify model.output_length
 
-    model.output_length = lambda x: x
+
+    model.output_length = lambda x: cnn_output_length(
+        x, kernel_size, conv_border_mode, conv_stride)
+
 
     print(model.summary())
     return model
