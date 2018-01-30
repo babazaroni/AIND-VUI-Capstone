@@ -175,7 +175,7 @@ def final_model(input_dim, filters, kernel_size, conv_stride,
     # add bidir GRU with batch normalization layers
 
     for layer_num in range(0, recur_layers):
-        d_rnn_layer = Bidirectional(GRU(rnn_units, activation='relu',return_sequences=True, implementation=2, name='d_rnn_{}'.format(layer_num)))(last_layer)
+        d_rnn_layer = Bidirectional(GRU(rnn_units, activation='relu',return_sequences=True, implementation=2, dropout=.2,recurrent_dropout=.2,name='d_rnn_{}'.format(layer_num)))(last_layer)
         last_layer = BatchNormalization(name='bn_rnn_{}'.format(layer_num))(d_rnn_layer)
 
     time_dense = TimeDistributed(Dense(output_dim, name='time_dense'))(last_layer)
